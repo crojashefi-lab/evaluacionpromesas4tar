@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Registro Tests — Promesas Chile 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070d1a;--bg2:#0c1528;--bg3:#111f35;
+  --panel:#0f1b30;--panel2:#162236;
+  --border:#1e3050;--border2:#2a4268;
+  --acc:#00d4ff;--acc2:#00ffaa;--warn:#ffb020;--red:#ff4560;
+  --txt:#dde8f5;--txt2:#7a96b8;--txt3:#3a5275;
+  --r: 10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{height:100%;overflow:hidden;}
+body{
+  background:var(--bg);color:var(--txt);
+  font-family:'DM Sans',sans-serif;font-size:15px;
+  height:100%;display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* HEADER */
+.hdr{
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:10px 16px;display:flex;align-items:center;
+  justify-content:space-between;flex-shrink:0;
+}
+.logo{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
+  color:var(--acc);letter-spacing:2px;}
+.logo span{color:var(--txt2);font-weight:500;}
+.hdr-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--txt3);}
+
+/* STEPS */
+.steps{
+  display:flex;background:var(--bg2);border-bottom:1px solid var(--border);
+  flex-shrink:0;padding:0 8px;
+}
+.step{
+  flex:1;padding:8px 4px;text-align:center;
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;
+  letter-spacing:1px;color:var(--txt3);border-bottom:2px solid transparent;
+  transition:all .2s;text-transform:uppercase;
+}
+.step.done{color:var(--acc2);border-color:var(--acc2);}
+.step.active{color:var(--acc);border-color:var(--acc);}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:14px 14px 80px;}
+.content::-webkit-scrollbar{width:3px;}
+.content::-webkit-scrollbar-thumb{background:var(--border2);}
+
+/* CARDS */
+.card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r);margin-bottom:12px;overflow:hidden;
+}
+.card-h{
+  padding:8px 12px;background:var(--bg3);
+  border-bottom:1px solid var(--border);
+  font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:2px;color:var(--txt2);text-transform:uppercase;
+}
+.card-b{padding:12px;}
+
+/* GROUPS selector */
+.group-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.grp-btn{
+  padding:14px 8px;border-radius:8px;border:2px solid var(--border2);
+  background:transparent;color:var(--txt2);font-family:'Rajdhani',sans-serif;
+  font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;
+  transition:all .15s;text-align:center;line-height:1.3;
+}
+.grp-btn:active{transform:scale(.96);}
+.grp-btn.sel{background:rgba(0,212,255,.12);border-color:var(--acc);color:var(--acc);}
+
+/* TEST selector */
+.test-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.test-btn{
+  padding:12px 8px;border-radius:8px;border:2px solid var(--border);
+  background:var(--panel2);color:var(--txt2);font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;
+  text-align:center;line-height:1.4;
+}
+.test-btn .icon{font-size:22px;display:block;margin-bottom:4px;}
+.test-btn:active{transform:scale(.96);}
+.test-btn.sel{background:rgba(0,255,170,.1);border-color:var(--acc2);color:var(--acc2);}
+
+/* DEPORTISTA selector */
+.dep-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;}
+.dep-btn{
+  padding:10px 12px;border-radius:7px;border:1px solid var(--border);
+  background:var(--panel2);color:var(--txt);font-size:13px;
+  font-weight:500;cursor:pointer;transition:all .15s;text-align:left;
+}
+.dep-btn:active{transform:scale(.98);}
+.dep-btn.sel{background:rgba(0,212,255,.12);border-color:var(--acc);color:var(--acc);}
+
+/* FORM */
+label{
+  display:block;font-size:11px;color:var(--txt2);
+  font-family:'DM Mono',monospace;letter-spacing:.5px;margin-bottom:4px;
+  text-transform:uppercase;
+}
+input,select{
+  width:100%;background:var(--bg);border:1px solid var(--border2);
+  border-radius:7px;padding:12px;color:var(--txt);font-size:16px;
+  font-family:'DM Sans',sans-serif;margin-bottom:12px;
+  transition:border-color .15s;-webkit-appearance:none;
+}
+input:focus,select:focus{outline:none;border-color:var(--acc);}
+input[type=number]{font-family:'DM Mono',monospace;font-size:20px;text-align:center;}
+/* Fix decimal en iPhone */
+@supports (-webkit-touch-callout: none){
+  input[type=number]{font-size:16px;}
+}
+select option{background:var(--bg2);}
+
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+
+/* FMS selector */
+.fms-row{display:flex;gap:8px;justify-content:center;margin-bottom:12px;}
+.fms-btn{
+  width:64px;height:64px;border-radius:12px;border:2px solid var(--border2);
+  background:var(--panel2);color:var(--txt2);font-size:28px;font-weight:700;
+  font-family:'Rajdhani',sans-serif;cursor:pointer;transition:all .15s;
+}
+.fms-btn.sel{background:rgba(0,255,170,.15);border-color:var(--acc2);color:var(--acc2);}
+.fms-btn:active{transform:scale(.92);}
+
+/* BOTTOM BAR */
+.btm{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:10px 14px;display:flex;gap:10px;
+}
+.btn{
+  flex:1;padding:13px;border-radius:8px;border:none;
+  font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;
+  letter-spacing:1px;cursor:pointer;transition:all .12s;text-transform:uppercase;
+}
+.btn:active{transform:scale(.97);}
+.btn-acc{background:var(--acc);color:#000;}
+.btn-acc:disabled{opacity:.3;cursor:not-allowed;transform:none;}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--txt2);}
+
+/* TOAST */
+.toast{
+  position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);
+  background:var(--panel2);border:1px solid var(--border2);border-radius:8px;
+  padding:10px 18px;font-size:13px;opacity:0;pointer-events:none;
+  transition:all .25s;z-index:999;white-space:nowrap;
+  font-family:'DM Mono',monospace;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--acc2);color:var(--acc2);}
+.toast.err{border-color:var(--red);color:var(--red);}
+
+/* STEP PAGES */
+.page{display:none;}
+.page.active{display:block;}
+
+/* RESUMEN */
+.res-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.res-row:last-child{border-bottom:none;}
+.res-label{color:var(--txt2);font-family:'DM Mono',monospace;font-size:11px;}
+.res-val{font-weight:600;color:var(--txt);font-family:'DM Mono',monospace;}
+
+/* LOADING */
+.spinner{
+  width:20px;height:20px;border:2px solid var(--border2);
+  border-top-color:var(--acc);border-radius:50%;
+  animation:spin .6s linear infinite;display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.empty{color:var(--txt3);font-size:13px;text-align:center;padding:20px 0;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo">PROMESAS <span>CHILE 2026</span></div>
+  <div class="hdr-date" id="hdr-date"></div>
+</div>
+
+<!-- STEPS -->
+<div class="steps">
+  <div class="step active" id="st1">1 GRUPO</div>
+  <div class="step" id="st2">2 TEST</div>
+  <div class="step" id="st3">3 ATLETA</div>
+  <div class="step" id="st4">4 DATOS</div>
+  <div class="step" id="st5">✓ ENVIAR</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- PÁGINA 1: GRUPO -->
+  <div class="page active" id="p1">
+    <div class="card">
+      <div class="card-h">Selecciona el grupo</div>
+      <div class="card-b">
+        <div class="group-grid" id="grupo-grid">
+          <button class="grp-btn" onclick="selGrupo('Halterofilia Infantil',this)">Halterofilia<br>Infantil</button>
+          <button class="grp-btn" onclick="selGrupo('Halterofilia Juvenil',this)">Halterofilia<br>Juvenil</button>
+          <button class="grp-btn" onclick="selGrupo('Gimnasia Artistica Juvenil',this)">Gimnasia<br>Artística Juv.</button>
+          <button class="grp-btn" onclick="selGrupo('Halterofilia Infantil Vicuna',this)">Halterofilia<br>Inf. Vicuña</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PÁGINA 2: TEST -->
+  <div class="page" id="p2">
+    <div class="card">
+      <div class="card-h">Selecciona el test</div>
+      <div class="card-b">
+        <div class="test-grid">
+          <button class="test-btn" onclick="selTest('PHV',this)">
+            <span class="icon">📏</span>PHV<br><small style="font-size:10px;color:var(--txt3)">Peso + Tallas</small>
+          </button>
+          <button class="test-btn" onclick="selTest('SIT_AND_REACH',this)">
+            <span class="icon">🤸</span>Sit & Reach<br><small style="font-size:10px;color:var(--txt3)">3 intentos</small>
+          </button>
+          <button class="test-btn" onclick="selTest('DORSIFLEXION',this)">
+            <span class="icon">🦶</span>Dorsiflexión<br><small style="font-size:10px;color:var(--txt3)">Tobillo</small>
+          </button>
+          <button class="test-btn" onclick="selTest('FLEXION_HOMBRO',this)">
+            <span class="icon">💪</span>Flexión<br>Hombro
+          </button>
+          <button class="test-btn" onclick="selTest('ROTACION_INTERNA',this)">
+            <span class="icon">🔄</span>Rot. Interna<br>Hombro
+          </button>
+          <button class="test-btn" onclick="selTest('FMS_SENTADILLA',this)">
+            <span class="icon">🏋️</span>FMS<br>Sentadilla
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PÁGINA 3: ATLETA -->
+  <div class="page" id="p3">
+    <div class="card">
+      <div class="card-h">Selecciona el atleta</div>
+      <div class="card-b">
+        <input type="text" id="buscar" placeholder="Buscar nombre..." oninput="filtrarDep()" style="margin-bottom:10px;">
+        <div class="dep-list" id="dep-list">
+          <div class="empty"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PÁGINA 4: DATOS -->
+  <div class="page" id="p4">
+    <div class="card" id="form-card">
+      <div class="card-h" id="form-titulo">Ingresa los datos</div>
+      <div class="card-b" id="form-body"></div>
+    </div>
+  </div>
+
+  <!-- PÁGINA 5: RESUMEN -->
+  <div class="page" id="p5">
+    <div class="card">
+      <div class="card-h">Confirmar y enviar</div>
+      <div class="card-b" id="resumen-body"></div>
+    </div>
+    <div class="card" style="margin-top:8px;">
+      <div class="card-b" style="text-align:center;padding:20px;">
+        <div id="send-status" style="font-size:13px;color:var(--txt2);margin-bottom:12px;font-family:'DM Mono',monospace;">
+          Revisa los datos antes de enviar
+        </div>
+        <button class="btn btn-acc" style="width:100%;font-size:16px;padding:16px;" onclick="enviar()" id="btn-enviar">
+          ENVIAR A GOOGLE SHEETS ↑
+        </button>
+        <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="nuevoRegistro()">
+          + NUEVO REGISTRO
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- BOTTOM BAR -->
+<div class="btm">
+  <button class="btn btn-ghost" onclick="anterior()" id="btn-ant" style="display:none;">← ATRÁS</button>
+  <button class="btn btn-acc" onclick="siguiente()" id="btn-sig" disabled>SIGUIENTE →</button>
+</div>
+
+<script>
+const URL_GAS = 'https://script.google.com/macros/s/AKfycbyUc2T7MR4-z89yB-CE4LNswEVM9-8DD36jOn4RSAqZXeY37bBmn6tFMWjogCYO623FrA/exec';
+
+// ── ESTADO ────────────────────────────────────────────────────
+let estado = {
+  paso: 1,
+  grupo: '',
+  test: '',
+  atleta: '',
+  sexo: '',
+  datos: {}
+};
+
+let todosDeportistas = [];
+
+// ── INIT ──────────────────────────────────────────────────────
+window.onload = () => {
+  const now = new Date();
+  document.getElementById('hdr-date').textContent =
+    now.toLocaleDateString('es-CL', {weekday:'short', day:'numeric', month:'short', year:'numeric'});
+  actualizarNav();
+};
+
+function today() {
+  return new Date().toISOString().split('T')[0];
+}
+
+// ── GRUPO ─────────────────────────────────────────────────────
+function selGrupo(grupo, btn) {
+  document.querySelectorAll('.grp-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  estado.grupo = grupo;
+  actualizarNav();
+}
+
+// ── TEST ──────────────────────────────────────────────────────
+function selTest(test, btn) {
+  document.querySelectorAll('.test-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  estado.test = test;
+  actualizarNav();
+}
+
+// ── DEPORTISTAS ───────────────────────────────────────────────
+function cargarDeportistas() {
+  const lista = document.getElementById('dep-list');
+  lista.innerHTML = '<div class="empty"><div class="spinner"></div></div>';
+
+  fetch(`${URL_GAS}?grupo=${encodeURIComponent(estado.grupo)}`)
+    .then(r => r.json())
+    .then(data => {
+      todosDeportistas = data.deportistas || [];
+      renderDeportistas(todosDeportistas);
+    })
+    .catch(() => {
+      // Fallback offline con datos base
+      todosDeportistas = getDeportistasLocal(estado.grupo);
+      renderDeportistas(todosDeportistas);
+      toast('Sin conexión — usando lista local', 'err');
+    });
+}
+
+function getDeportistasLocal(grupo) {
+  // Lista de respaldo (offline). Se usa solo si falla la conexión al Sheet.
+  const base = {
+    'Halterofilia Infantil': [
+      {nombre:'JEAN POOL RAMOS BARRIENTOS',sexo:'M'},
+      {nombre:'MAURO SANCHEZ CASTILLO',sexo:'M'},
+      {nombre:'MAXIMILIANO RAMOS BARRIENTOS',sexo:'M'},
+      {nombre:'ISIDORA COLLAO BARRERA',sexo:'F'},
+      {nombre:'BENJAMIN MANRIQUEZ CABELLOS',sexo:'M'},
+      {nombre:'YENDELIN TAPIA CONTRERAS',sexo:'F'},
+      {nombre:'KEVIN CONTRERAS CABELLO',sexo:'M'},
+      {nombre:'AGUSTINA RAMIREZ VARGAS',sexo:'F'},
+      {nombre:'RODRIGO ARAYA DUARTE',sexo:'M'},
+    ],
+    'Halterofilia Juvenil': [
+      {nombre:'LUIS FELIPE ALFARO MENDEZ',sexo:'M'},
+      {nombre:'MATIAS RENATO MORENO BAHAMONDES',sexo:'M'},
+      {nombre:'FABIAN ALEXANDER VILLALOBOS ORELLANA',sexo:'M'},
+      {nombre:'SCOTT ISAIAS COLLAO BARRERA',sexo:'M'},
+      {nombre:'SOFIA CUBILLO ROBLES',sexo:'F'},
+      {nombre:'ALMA ISABELLA TORRES',sexo:'F'},
+      {nombre:'PABLO CROCCO',sexo:'M'},
+    ],
+    'Gimnasia Artistica Juvenil': [
+      {nombre:'AGUSTINA MELYS CONTRERAS',sexo:'F'},
+      {nombre:'EMILIA VALLEJOS OLIVARES',sexo:'F'},
+      {nombre:'JOSEFA JAMET SANTOS',sexo:'F'},
+      {nombre:'ISIDORA SALINAS SALINAS',sexo:'F'},
+      {nombre:'SOFIA MIRANDA DIAZ',sexo:'F'},
+      {nombre:'SPERANZA ECCHER VARGAS',sexo:'F'},
+    ],
+    'Halterofilia Infantil Vicuna': [
+      {nombre:'MARCO ZAVALA',sexo:'M'},
+      {nombre:'MAXIMILIANO LAZO',sexo:'M'},
+      {nombre:'EMILIA ARAOS',sexo:'F'},
+      {nombre:'ANTONIA ALTAMIRANO',sexo:'F'},
+      {nombre:'MARTINA ZAVALA',sexo:'F'},
+      {nombre:'HECTOR FABREGAS',sexo:'M'},
+      {nombre:'RODRIGO CALLEJAS',sexo:'M'},
+      {nombre:'SOFIA URBINA',sexo:'F'},
+      {nombre:'EMELYE TELLO DIAZ',sexo:'F'},
+      {nombre:'DENNIS CORTES',sexo:'M'},
+      {nombre:'DERLAN ROJAS',sexo:'M'},
+    ],
+  };
+  return (base[grupo] || []).map(d => ({...d, grupo}));
+}
+
+function renderDeportistas(lista) {
+  const cont = document.getElementById('dep-list');
+  if (!lista.length) {
+    cont.innerHTML = '<div class="empty">No hay deportistas para este grupo.<br>Agrégalos en la hoja DEPORTISTAS del Google Sheet.</div>';
+    return;
+  }
+  cont.innerHTML = lista.map(d => `
+    <button class="dep-btn" onclick="selAtleta('${d.nombre}','${d.sexo}',this)">
+      ${d.nombre}
+    </button>
+  `).join('');
+}
+
+function filtrarDep() {
+  const q = document.getElementById('buscar').value.toUpperCase();
+  const filtrados = todosDeportistas.filter(d => d.nombre.includes(q));
+  renderDeportistas(filtrados);
+}
+
+function selAtleta(nombre, sexo, btn) {
+  document.querySelectorAll('.dep-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  estado.atleta = nombre;
+  estado.sexo   = sexo || '';
+  actualizarNav();
+}
+
+// ── FORMULARIO ────────────────────────────────────────────────
+const TEST_LABELS = {
+  PHV: 'PHV — Medidas Antropométricas',
+  SIT_AND_REACH: 'Sit & Reach — Flexibilidad',
+  DORSIFLEXION: 'Dorsiflexión de Tobillo',
+  FLEXION_HOMBRO: 'Flexión de Hombro',
+  ROTACION_INTERNA: 'Rotación Interna de Hombro',
+  FMS_SENTADILLA: 'FMS — Sentadilla Profunda',
+};
+
+function construirForm() {
+  const titulo = document.getElementById('form-titulo');
+  const body   = document.getElementById('form-body');
+  titulo.textContent = TEST_LABELS[estado.test] || estado.test;
+  estado.datos = {};
+
+  const forms = {
+    PHV: `
+      <label>Peso corporal (kg)</label>
+      <input type="text" id="f-peso" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">
+      <div class="row2">
+        <div>
+          <label>Talla de pie (cm)</label>
+          <input type="text" id="f-tpie" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">
+        </div>
+        <div>
+          <label>Talla sentado (cm)</label>
+          <input type="text" id="f-tsent" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">
+        </div>
+      </div>
+      <label>Sexo</label>
+      <select id="f-sexo" onchange="chkForm()">
+        <option value="">Seleccionar...</option>
+        <option value="M" ${estado.sexo==='M'?'selected':''}>Masculino</option>
+        <option value="F" ${estado.sexo==='F'?'selected':''}>Femenino</option>
+      </select>`,
+
+    SIT_AND_REACH: `
+      <div class="row3">
+        <div>
+          <label>Intento 1 (cm)</label>
+          <input type="text" id="f-i1" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="—" oninput="chkForm()">
+        </div>
+        <div>
+          <label>Intento 2 (cm)</label>
+          <input type="text" id="f-i2" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="—" oninput="chkForm()">
+        </div>
+        <div>
+          <label>Intento 3 (cm)</label>
+          <input type="text" id="f-i3" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="—" oninput="chkForm()">
+        </div>
+      </div>
+      <div style="background:var(--bg3);border-radius:7px;padding:10px;text-align:center;font-family:'DM Mono',monospace;">
+        <div style="font-size:11px;color:var(--txt2);margin-bottom:4px;">MEJOR</div>
+        <div id="mejor-sr" style="font-size:28px;font-weight:600;color:var(--acc);">—</div>
+      </div>`,
+
+    DORSIFLEXION: `
+      <div style="font-size:11px;color:var(--txt2);font-family:'DM Mono',monospace;margin-bottom:10px;">Ángulo en grados (°) — rodilla en pared</div>
+      <div class="row2">
+        <div>
+          <label>🦵 Izquierda (°)</label>
+          <input type="text" id="f-izq" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">
+        </div>
+        <div>
+          <label>🦵 Derecha (°)</label>
+          <input type="text" id="f-der" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">
+        </div>
+      </div>
+      <label>Asimetría (°)</label>
+      <input type="text" id="f-asim" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">`,
+
+    FLEXION_HOMBRO: `
+      <div style="font-size:11px;color:var(--txt2);font-family:'DM Mono',monospace;margin-bottom:10px;">Elevación anterior máxima en grados (°)</div>
+      <div class="row2">
+        <div>
+          <label>💪 Izquierda (°)</label>
+          <input type="text" id="f-izq" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">
+        </div>
+        <div>
+          <label>💪 Derecha (°)</label>
+          <input type="text" id="f-der" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">
+        </div>
+      </div>
+      <label>Asimetría (°)</label>
+      <input type="text" id="f-asim" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">`,
+
+    ROTACION_INTERNA: `
+      <div style="font-size:11px;color:var(--txt2);font-family:'DM Mono',monospace;margin-bottom:10px;">Rotación glenohumeral interna en grados (°)</div>
+      <div class="row2">
+        <div>
+          <label>🔄 Izquierda (°)</label>
+          <input type="text" id="f-izq" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">
+        </div>
+        <div>
+          <label>🔄 Derecha (°)</label>
+          <input type="text" id="f-der" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">
+        </div>
+      </div>
+      <label>Asimetría (°)</label>
+      <input type="text" id="f-asim" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="0.0" oninput="chkForm()">`,
+
+    FMS_SENTADILLA: `
+      <div style="font-size:12px;color:var(--txt2);margin-bottom:14px;line-height:1.5;">
+        Evalúa movilidad global, control postural y coordinación.<br>
+        <strong style="color:var(--txt)">3</strong> = Sin compensación · 
+        <strong style="color:var(--txt)">2</strong> = Compensación leve · 
+        <strong style="color:var(--txt)">1</strong> = No completa
+      </div>
+      <div class="fms-row">
+        <button class="fms-btn" onclick="selFMS(1,this)">1</button>
+        <button class="fms-btn" onclick="selFMS(2,this)">2</button>
+        <button class="fms-btn" onclick="selFMS(3,this)">3</button>
+      </div>
+      <div id="fms-desc" style="text-align:center;font-size:12px;color:var(--txt3);font-family:'DM Mono',monospace;min-height:20px;"></div>`,
+  };
+
+  body.innerHTML = forms[estado.test] || '<p style="color:var(--txt2)">Test no configurado.</p>';
+
+  // Sit & Reach: calcular mejor en tiempo real
+  if (estado.test === 'SIT_AND_REACH') {
+    ['f-i1','f-i2','f-i3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', actualizarMejorSR);
+    });
+  }
+}
+
+function norm(v){ return parseFloat(String(v).replace(",",".")) || 0; }
+function actualizarMejorSR() {
+  const vals = ['f-i1','f-i2','f-i3']
+    .map(id => norm(document.getElementById(id)?.value))
+    .filter(v => v > 0);
+  const mejor = vals.length ? Math.max(...vals) : null;
+  document.getElementById('mejor-sr').textContent = mejor !== null ? mejor.toFixed(1) + ' cm' : '—';
+}
+
+function selFMS(val, btn) {
+  document.querySelectorAll('.fms-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  estado.datos.fms = val;
+  const desc = {1:'No completa el patrón', 2:'Completa con compensación', 3:'Patrón óptimo (12/12)'};
+  document.getElementById('fms-desc').textContent = desc[val] || '';
+  chkForm();
+}
+
+function chkForm() {
+  const t = estado.test;
+  let ok = false;
+  if (t === 'PHV') {
+    ok = !!document.getElementById('f-peso')?.value &&
+         !!document.getElementById('f-tpie')?.value &&
+         !!document.getElementById('f-tsent')?.value &&
+         !!document.getElementById('f-sexo')?.value;
+  } else if (t === 'SIT_AND_REACH') {
+    ok = !!document.getElementById('f-i1')?.value;
+  } else if (['DORSIFLEXION','FLEXION_HOMBRO','ROTACION_INTERNA'].includes(t)) {
+    ok = !!document.getElementById('f-izq')?.value &&
+         !!document.getElementById('f-der')?.value;
+  } else if (t === 'FMS_SENTADILLA') {
+    ok = !!estado.datos.fms;
+  }
+  document.getElementById('btn-sig').disabled = !ok;
+}
+
+function recopilarDatos() {
+  const t = estado.test;
+  const d = {};
+  if (t === 'PHV') {
+    d.peso        = String(document.getElementById('f-peso').value).replace(',','.');
+    d.talla_pie   = String(document.getElementById('f-tpie').value).replace(',','.');
+    d.talla_sentado = String(document.getElementById('f-tsent').value).replace(',','.');
+    d.sexo        = document.getElementById('f-sexo').value;
+  } else if (t === 'SIT_AND_REACH') {
+    d.i1 = String(document.getElementById('f-i1').value || 0).replace(',','.');
+    d.i2 = String(document.getElementById('f-i2').value || 0).replace(',','.');
+    d.i3 = String(document.getElementById('f-i3').value || 0).replace(',','.');
+  } else if (['DORSIFLEXION','FLEXION_HOMBRO','ROTACION_INTERNA'].includes(t)) {
+    d.izq  = String(document.getElementById('f-izq').value).replace(',','.');
+    d.der  = String(document.getElementById('f-der').value).replace(',','.');
+    d.asim = String(document.getElementById('f-asim').value || '').replace(',','.');
+  } else if (t === 'FMS_SENTADILLA') {
+    d.puntaje = estado.datos.fms;
+  }
+  estado.datos = {...estado.datos, ...d};
+}
+
+// ── RESUMEN ───────────────────────────────────────────────────
+function construirResumen() {
+  const labels = {
+    PHV: [['Peso corporal','peso','kg'],['Talla de pie','talla_pie','cm'],['Talla sentado','talla_sentado','cm'],['Sexo','sexo','']],
+    SIT_AND_REACH: [['Intento 1','i1','cm'],['Intento 2','i2','cm'],['Intento 3','i3','cm']],
+    DORSIFLEXION: [['Izquierda','izq','°'],['Derecha','der','°'],['Asimetría','asim','°']],
+    FLEXION_HOMBRO: [['Izquierda','izq','°'],['Derecha','der','°'],['Asimetría','asim','°']],
+    ROTACION_INTERNA: [['Izquierda','izq','°'],['Derecha','der','°'],['Asimetría','asim','°']],
+    FMS_SENTADILLA: [['Puntaje','puntaje','']],
+  };
+
+  const d = estado.datos;
+  const rows = [
+    {l:'Grupo', v: estado.grupo},
+    {l:'Test', v: TEST_LABELS[estado.test]},
+    {l:'Atleta', v: estado.atleta},
+    {l:'Fecha', v: today()},
+  ];
+
+  (labels[estado.test] || []).forEach(([lbl, key, unit]) => {
+    if (d[key] !== undefined && d[key] !== '') {
+      rows.push({l: lbl, v: `${d[key]} ${unit}`.trim()});
+    }
+  });
+
+  document.getElementById('resumen-body').innerHTML = rows.map(r => `
+    <div class="res-row">
+      <span class="res-label">${r.l}</span>
+      <span class="res-val">${r.v}</span>
+    </div>
+  `).join('');
+}
+
+// ── ENVÍO ─────────────────────────────────────────────────────
+function enviar() {
+  const btn = document.getElementById('btn-enviar');
+  const status = document.getElementById('send-status');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="margin:0 auto"></div>';
+  status.textContent = 'Enviando...';
+
+  const payload = {
+    test:   estado.test,
+    nombre: estado.atleta,
+    grupo:  estado.grupo,
+    fecha:  today(),
+    sexo:   estado.sexo,
+    ...estado.datos
+  };
+
+  fetch(URL_GAS, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    status.textContent = '✓ Enviado correctamente';
+    status.style.color = 'var(--acc2)';
+    btn.innerHTML = '✓ ENVIADO';
+    btn.style.background = 'var(--acc2)';
+    toast('✓ Guardado en Google Sheets', 'ok');
+  })
+  .catch(err => {
+    status.textContent = '✗ Error al enviar';
+    status.style.color = 'var(--red)';
+    btn.disabled = false;
+    btn.innerHTML = 'REINTENTAR ↑';
+    toast('Error de conexión', 'err');
+  });
+}
+
+// ── NAVEGACIÓN ────────────────────────────────────────────────
+function siguiente() {
+  if (estado.paso === 3) {
+    construirForm();
+    document.getElementById('btn-sig').disabled = true;
+  }
+  if (estado.paso === 4) {
+    recopilarDatos();
+    construirResumen();
+  }
+  if (estado.paso === 2 && !todosDeportistas.length) {
+    cargarDeportistas();
+  }
+  irPaso(estado.paso + 1);
+}
+
+function anterior() {
+  irPaso(estado.paso - 1);
+}
+
+function irPaso(n) {
+  document.querySelector('.page.active').classList.remove('active');
+  document.getElementById('p' + n).classList.add('active');
+
+  // Steps
+  for (let i = 1; i <= 5; i++) {
+    const s = document.getElementById('st' + i);
+    s.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+  }
+
+  estado.paso = n;
+  actualizarNav();
+}
+
+function actualizarNav() {
+  const ant = document.getElementById('btn-ant');
+  const sig = document.getElementById('btn-sig');
+
+  ant.style.display = estado.paso > 1 ? 'block' : 'none';
+
+  if (estado.paso === 5) {
+    sig.style.display = 'none';
+  } else {
+    sig.style.display = 'block';
+    // Habilitar según paso
+    if (estado.paso === 1) sig.disabled = !estado.grupo;
+    else if (estado.paso === 2) sig.disabled = !estado.test;
+    else if (estado.paso === 3) sig.disabled = !estado.atleta;
+    else if (estado.paso === 4) sig.disabled = false; // chkForm lo maneja
+  }
+}
+
+function nuevoRegistro() {
+  estado = {paso:1, grupo:'', test:'', atleta:'', sexo:'', datos:{}};
+  todosDeportistas = [];
+  document.querySelectorAll('.grp-btn,.test-btn,.dep-btn').forEach(b => b.classList.remove('sel'));
+  document.getElementById('buscar') && (document.getElementById('buscar').value = '');
+  document.getElementById('send-status').textContent = 'Revisa los datos antes de enviar';
+  document.getElementById('send-status').style.color = '';
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = false;
+  btn.innerHTML = 'ENVIAR A GOOGLE SHEETS ↑';
+  btn.style.background = '';
+  irPaso(1);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function toast(msg, tipo) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show ${tipo}`;
+  setTimeout(() => el.className = 'toast', 2800);
+}
+</script>
+</body>
+</html>
